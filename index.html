@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Log</title>
+</head>
+<body>
+    <h1 class="header" id="header">Workout Log</h1>
+    <h2 class="none" id="header"></h2>
+ 
+    <div>
+        <form id="exercise-info">
+            <div>
+                <label for="date">Date</label> 
+                <input required type="date" id="date">
+                <label for="body-part">Body Part</label>
+                    <select name="body-part" id="body-part">
+                        <option value="chest">Chest</option>
+                        <option value="back">Back</option>
+                        <option value="shoulders">Shoulders</option>
+                        <option value="legs">Legs</option>
+                        <option value="triceps">Triceps</option>
+                        <option value="quads">Quads</option>
+                        <option value="hamstrings">Hamstrings</option>
+                        <option value="push">Push</option>
+                        <option value="pull">Pull</option>
+                    </select> 
+                    <select name="workout-type" id="workout-type">
+                        <option value="strength">Strength</option>
+                        <option value="conditioning">Conditioning</option>
+                        <option value="muscle-growth">Muscle growth</option>
+                        <option value="fat-loss">Fat loss</option>
+                    </select>
+            </div>
+            <br>
+            <div>
+            
+                <label for="exercise">Exercise</label>
+                <input required id="exercise" type="text">
+                
+                <label for="sets">Sets</label>
+                <input required id="sets" type="number">
+                
+                <label for="reps">Reps</label>
+                <input required id="reps" type="number">
+                
+                <label for="weight">Weight</label>
+                <input required id="weight" type="number">
+            </div>
+            
+                    
+
+
+                
+                <input type="submit" value="submit">
+        </form>
+        
+    </div>
+    <div>
+        <p>Workout so far</p>
+        <p id="workout-date-and-body_part"></p>
+        <p id="current-workout"></p>
+        <table id="workout-table">
+            <th>Exercise Number</th>
+            <th>Exercise Name</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Weight</th>
+        </table>
+    </div>
+
+    <script src="index.js"></script>
+
+</body>
+</html>
