@@ -18,6 +18,8 @@ const currentWorkout = document.getElementById("current-workout")
 const workoutTable = document.getElementById("workout-table")
 const workoutDate = document.getElementById("workout-date-and-body_part")
 const workoutLog = document.getElementById("workout-log")
+const messageText = document.getElementById("message")
+
 
 // Class for each instance of exercise
 
@@ -36,18 +38,20 @@ class workoutLogObj  {
 
 }
 
-
 const getUserInput = () => {
+    messageText.innerHTML=""
     exerciseInfo.addEventListener("submit", (e) => {
     e.preventDefault();
+
     let bodyPartTrained = bodyPart.value
+
     bodyPartTrained = new workoutLogObj
     bodyPartTrained.exercise = exercise.value
     bodyPartTrained.date = date.value 
     bodyPartTrained.sets = parseInt(sets.value)
 
     const setNum = parseInt(sets.value)
-    console.log(bodyPartTrained, date.value, workoutDate.innerHTML, "is this working")
+        console.log(bodyPartTrained, date.value, workoutDate.innerHTML, "is this working")
     //logWorkout(exercise.value, sets.value)
     logRepsAndWeight(setNum, bodyPartTrained);
     })
@@ -55,6 +59,7 @@ const getUserInput = () => {
 
 // create popup for function https://www.geeksforgeeks.org/how-to-create-popup-box-using-html-and-css/
 
+//create user input form for reps and weight and pass to logWorkOut() function
 const logRepsAndWeight = (setNum, bodyPartTrained) => {
     console.log(bodyPartTrained)
 
@@ -68,9 +73,12 @@ const logRepsAndWeight = (setNum, bodyPartTrained) => {
     const reps = document.createElement("input")
     reps.setAttribute("placeholder", "Reps")
     reps.setAttribute("type", "number")
+    reps.setAttribute("required", "")
 
     const weight = document.createElement("input")
     weight.setAttribute("placeholder", "Weight")
+    weight.setAttribute("type", "number")
+    weight.setAttribute("required", "")
 
     const s = document.createElement("input")
     s.setAttribute("type", "submit")
@@ -81,7 +89,6 @@ const logRepsAndWeight = (setNum, bodyPartTrained) => {
     form.appendChild(s);
 
     repsAndWeight.appendChild(form)
-
 
     form.addEventListener("submit", (e) => {
         e.preventDefault()
@@ -105,40 +112,88 @@ const logWorkout = (bodyPartTrained) => {if (workoutDate.innerHTML == "") {
     workoutDate.innerHTML = `${date.value} ${bodyPart.value}`
 }
 let exerciseNumber = "sort out later";
-workoutTable.innerHTML += `
-<tr>
-<td>${exerciseNumber}</td>
-<td>${bodyPartTrained.exercise}</td>
-<td>${bodyPartTrained.sets}</td>
-<td>${bodyPartTrained.reps.join(", ")}</td>
-<td>${bodyPartTrained.weight.join(", ")}</td>
-<td><input type="button" value="Amend" id="amend" onclick="amendRow('${encodeURIComponent(JSON.stringify(bodyPartTrained))}', this)"></td>
-<td><input type="button" value="Delete" id="delete" onclick="deleteRow(this)"/></td>
-</tr>
-`
+    workoutTable.innerHTML += `
+        <tr>
+            <td>${exerciseNumber}</td>
+            <td>${bodyPartTrained.exercise}</td>
+            <td>${bodyPartTrained.sets}</td>
+            <td>${bodyPartTrained.reps.join(", ")}</td>
+            <td>${bodyPartTrained.weight.join(", ")}</td>
+            <td><input type="button" value="Amend" id="amend" onclick="amendRow('${encodeURIComponent(JSON.stringify(bodyPartTrained))}', this)"></td>
+            <td><input type="button" value="Delete" id="delete" onclick="deleteRow(this)"/></td>
+        </tr>
+        `
 
 workoutLog.addEventListener("submit", (e) => {
     e.preventDefault()
-    //Cleans data - gets rid of buttons so are not stored in array
-    //this unpacks table, maps the td and tr elements and then uses map to get data using innerText
 
+    //this code unpacks table, maps the td and tr elements and then uses map to get data using innerText
     let data = [...workoutTable.rows].map(t => [...t.children].map(u => u.innerText))
 
-    let cleanedData = []
-    for (let i = 1; i < data.length; i++) {   
-        cleanedData.push(data[i].filter(item => item !== ""))
-    }
-    console.log(cleanedData)
-    })
+    //Cleans data - gets rid of buttons so are not stored in array
+    let cleanedDataObject = {}
 
-getUserInput()
+    let cleanedDataArray = []
+
+    let cleanedData = []
+
+    for (let i = 1; i < data.length; i++) {   
+        cleanedDataObject = {}
+        const cleanedDataElement = (data[i].filter(item => item !== ""))
+        console.log(cleanedDataElement)
+        cleanedData.push([data[0]] , [cleanedDataElement])
+        //console.log(data[0][2], cleanedDataElement[2])
+        for (let j = 0; j < cleanedDataElement.length; j++) {
+            cleanedDataObject[data[0][j]] = cleanedDataElement[j]
+        }
+    cleanedDataArray.push(cleanedDataObject)
+    } 
+    
+    //console.log(cleanedDataObject, cleanedDataArray)
+
+    //console.log(date.value, bodyPart.value, cleanedData)
+    let bodyPartWorkout = {
+        dateOfWorkout: date.value,
+        bodyPartWorkoutName: bodyPart.value,
+        workoutData: cleanedDataArray
+    }
+
+    console.log(bodyPartWorkout)
+    
+
+    //send to storage
+
+    //Check if object empty : if not, save object, if not saved, carry on
+    if (Object.keys(bodyPartWorkout).length !== 0) {
+        console.log("objec not empty")
+        if (workoutTable.rows.length > bodyPartTrained.sets){
+            for (let i = bodyPartTrained.sets; i > 0; i--) {
+            console.log(i, bodyPartTrained.sets)
+            workoutTable.deleteRow(i)
+            }
+        }
+
+        //PUT A TIMER ON MESSAGE
+        
+        messageText.innerHTML += "Thanks for your input"
+        exerciseInfo.reset()
+
+
+    }
+})
+
+    //set time out before leaving?
+
+    getUserInput()
 }
 
+//delete row of user input
 const deleteRow = (row) => {
     const i = row.parentNode.parentNode.rowIndex
     document.getElementById("workout-table").deleteRow(i)
 }
 
+//amend row of user input
 const amendRow = (obj, row) => {
     const i = row.parentNode.parentNode.rowIndex
     document.getElementById("workout-table").deleteRow(i)
