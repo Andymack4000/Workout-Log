@@ -17,16 +17,11 @@ const weight = document.getElementById("weight")
 const currentWorkout = document.getElementById("current-workout")
 const workoutTable = document.getElementById("workout-table")
 const workoutDate = document.getElementById("workout-date-and-body_part")
+const workoutLog = document.getElementById("workout-log")
 
-//make this a class?
+// Class for each instance of exercise
+
 class workoutLogObj  {
-
-    /* name = "";
-    date = "";
-    exercise = "";
-    sets = 0;
-    reps = [];
-    weight = []; */
 
     constructor(name = "", date = "", exercise = "", sets = 0, reps = [], weight = []){
 
@@ -55,28 +50,28 @@ const getUserInput = () => {
     console.log(bodyPartTrained, date.value, workoutDate.innerHTML, "is this working")
     //logWorkout(exercise.value, sets.value)
     logRepsAndWeight(setNum, bodyPartTrained);
-})
+    })
 }
 
 // create popup for function https://www.geeksforgeeks.org/how-to-create-popup-box-using-html-and-css/
 
 const logRepsAndWeight = (setNum, bodyPartTrained) => {
     console.log(bodyPartTrained)
-    
-    if (setNum === 1) {
-        return setNum;
-    } 
 
     const repsAndWeight = document.querySelector("#log-reps-and-weight")
+
     repsAndWeight.textContent=""
+
     const form = document.createElement("form")
     form.setAttribute("id", "form")
+
     const reps = document.createElement("input")
     reps.setAttribute("placeholder", "Reps")
     reps.setAttribute("type", "number")
 
     const weight = document.createElement("input")
     weight.setAttribute("placeholder", "Weight")
+
     const s = document.createElement("input")
     s.setAttribute("type", "submit")
     s.setAttribute("value", "Submit");
@@ -86,6 +81,7 @@ const logRepsAndWeight = (setNum, bodyPartTrained) => {
     form.appendChild(s);
 
     repsAndWeight.appendChild(form)
+
 
     form.addEventListener("submit", (e) => {
         e.preventDefault()
@@ -100,11 +96,8 @@ const logRepsAndWeight = (setNum, bodyPartTrained) => {
                 repsAndWeight.textContent=""
                 logWorkout(bodyPartTrained)
             }
-        
-
         console.log(bodyPartTrained.reps, bodyPartTrained.weight)
-    })
-    
+    })  
 }
 
 
@@ -123,6 +116,21 @@ workoutTable.innerHTML += `
 <td><input type="button" value="Delete" id="delete" onclick="deleteRow(this)"/></td>
 </tr>
 `
+
+workoutLog.addEventListener("submit", (e) => {
+    e.preventDefault()
+    //Cleans data - gets rid of buttons so are not stored in array
+    //this unpacks table, maps the td and tr elements and then uses map to get data using innerText
+
+    let data = [...workoutTable.rows].map(t => [...t.children].map(u => u.innerText))
+
+    let cleanedData = []
+    for (let i = 1; i < data.length; i++) {   
+        cleanedData.push(data[i].filter(item => item !== ""))
+    }
+    console.log(cleanedData)
+    })
+
 getUserInput()
 }
 
